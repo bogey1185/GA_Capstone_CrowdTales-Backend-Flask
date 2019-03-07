@@ -1,0 +1,4 @@
+.env
+crowdtalesdatabase.sqlite
+.DS_Store
+__pycache__
