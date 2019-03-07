@@ -11,9 +11,6 @@ class User(UserMixin, Model):
   username      = CharField(unique=True)
   email         = CharField(unique=True)
   password      = CharField()
-  stories       = ForeignKeyField(Story, backref='stories')
-  memberships   = ForeignKeyField(Membership, backref='membership')
-  bookmarks     = ForeignKeyField(Bookmarks, backref='bookmarks')
 
   class Meta:
     database = DATABASE
@@ -36,16 +33,13 @@ class User(UserMixin, Model):
       raise Exception('Email address already in use.')
 
 class Story(Model):
-  username:       = ForeignKeyField(User, backref='user')
+  creator         = ForeignKeyField(User, backref='user')
   date            = DateTimeField(default=datetime.datetime.now) 
   genre           = CharField()
   title           = CharField() 
   text            = TextField() #writing prompt
-  membership      = ForeignKeyField(Membership, backref='membership') #list if people who contributed
   status          = CharField() #starts as inprompt. When first person adds content, it is chagned to 'inProgress'. Changes to vote complete when project just needs ending. chagnes to vote finish when ending is done. When complete, 'complete'
-  queue           = ForeignKeyField(StoryQueue, backref='queue')
   currentContrib  = CharField() #current person with duty to contribute
-  content         = ForeignKeyField(Content, backref='content')
  
   class Meta:
     database = DATABASE
@@ -54,8 +48,6 @@ class Content(Model):
   username  = ForeignKeyField(User, backref='user') 
   date      = DateTimeField(default=datetime.datetime.now)
   text      = TextField()
-  votes     = ForeignKeyField(Vote, backref='vote')
-  comments  = ForeignKeyField(Comment, backref='comment')
   votedate  = DateTimeField() 
 
   class Meta:
@@ -94,7 +86,8 @@ class Comment(Model):
   username  = ForeignKeyField(User, backref='user')
   date      = DateTimeField(default=datetime.datetime.now)
   text      = TextField()
-  comments  = ForeignKeyField('self')
+  content   = ForeignKeyField(Content, backref='content') #this key field will be used if the comment is assigned to a content submission
+  comments  = ForeignKeyField('self') # this key field will be used if a comment is assigned to a comment
 
   class Meta:
     database = DATABASE
