@@ -134,6 +134,10 @@ class Story(Resource):
     changed_story = models.Story.get(models.Story.id == id) #returns updated object
     return change_story
 
+  def delete(self, id):
+    query = models.Story.delete().where(models.Story.id == id)
+    query.execute()
+    return 'resource deleted'
 
 stories_api = Blueprint('resources.stories', __name__)
 api = Api(stories_api)
