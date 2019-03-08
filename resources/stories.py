@@ -71,18 +71,8 @@ class StoryList(Resource):
   @marshal_with(story_fields)
   def post(self):
     args = self.reqparse.parse_args()
-    print(args, ' this is args in create')
     new_story = models.Story.create(**args)
     return new_story
-
-  #edit story
-  @marshal_with(story_fields)
-  def put(self, id):
-    args = self.reqparse.parse_args()
-    print(args, ' this is args in edit')
-    editted_story = models.Story.update(**args).where(models.Story.id == id)
-    editted_story.execute()
-    return editted_story
 
 class Story(Resource):
   def __init__(self):
@@ -133,14 +123,16 @@ class Story(Resource):
     story = models.Story.get(models.Story.id == id)
     return story
 
-  #edit story
-  # @marshal_with(story_fields)
-  # def put(self, id):
-  #   args = self.reqparse.parse_args()
-  #   print(args, ' this is args in edit')
-  #   editted_story = models.Story.update(**args).where(models.Story.id == id)
-  #   editted_story.execute()
-  #   return editted_story
+  # edit story
+  @marshal_with(story_fields)
+  def put(self, id):
+    args = self.reqparse.parse_args()
+    edit = models.Story.update(**args).where(models.Story.id == id)
+    edit.execute()
+    #.update only returns the num of rows changed. so, if you want it
+    # to return the updated db entry, requery:
+    changed_story = models.Story.get(models.Story.id == id) #returns updated object
+    return change_story
 
 
 stories_api = Blueprint('resources.stories', __name__)
