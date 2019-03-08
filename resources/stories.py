@@ -155,6 +155,7 @@ class Story(Resource):
     )
     super().__init__
 
+
   #get specific stories
   @marshal_with(story_fields)
   def get(self, id):

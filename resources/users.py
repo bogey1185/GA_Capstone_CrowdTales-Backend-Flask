@@ -10,7 +10,8 @@ from flask_cors import CORS
 
 user_fields = {
   'id': fields.String,
-  'username': fields.String
+  'username': fields.String,
+  'email': fields.String
 }
 
 class UserList(Resource):
