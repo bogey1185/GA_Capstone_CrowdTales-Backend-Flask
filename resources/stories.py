@@ -74,6 +74,44 @@ class StoryList(Resource):
     new_story = models.Story.create(**args)
     return new_story
 
+class StoryNew(Resource):
+  def __init__(self):
+    #initialize parser
+    self.reqparse = reqparse.RequestParser()
+    #add form of args to control requests
+    self.reqparse.add_argument(
+      'creator',
+      required=True,
+      help='No creator provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'genre',
+      required=True,
+      help='No genre provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'title',
+      required=True,
+      help='No title provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'text',
+      required=True,
+      help='No text provided.', 
+      location=['form', 'json']
+    )
+    super().__init__
+
+  #create new story
+  @marshal_with(story_fields)
+  def post(self):
+    args = self.reqparse.parse_args()
+    new_story = models.Story.create(**args)
+    return new_story
+
 class Story(Resource):
   def __init__(self):
     #initialize parser
@@ -146,6 +184,12 @@ api.add_resource(
   StoryList,
   '/stories',
   endpoint='stories'
+)
+
+api.add_resource(
+  StoryNew,
+  '/stories-new',
+  endpoint='stories-new'
 )
 
 api.add_resource(
