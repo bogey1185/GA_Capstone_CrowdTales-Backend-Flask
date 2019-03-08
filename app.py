@@ -3,7 +3,8 @@ from flask import Flask, g, flash, redirect, url_for
 from resources.users import users_api
 from resources.stories import stories_api
 from resources.memberships import memberships_api   
-from resources.storyqueues import storyqueues_api                                                                                       
+from resources.storyqueues import storyqueues_api    
+from resources.bookmarks import bookmarks_api                                                                                       
 import config
 import models
 from flask_cors import CORS
@@ -30,10 +31,12 @@ CORS(users_api, origins=["http://localhost:3000"], supports_credentials=True)
 CORS(stories_api, origins=["http://localhost:3000"], supports_credentials=True)
 CORS(memberships_api, origins=["http://localhost:3000"], supports_credentials=True)
 CORS(storyqueues_api, origins=["http://localhost:3000"], supports_credentials=True)
+CORS(bookmarks_api, origins=["http://localhost:3000"], supports_credentials=True)
 app.register_blueprint(users_api, url_prefix='/api/v1')
 app.register_blueprint(stories_api, url_prefix='/api/v1')
 app.register_blueprint(memberships_api, url_prefix='/api/v1')
 app.register_blueprint(storyqueues_api, url_prefix='/api/v1')
+app.register_blueprint(bookmarks_api, url_prefix='/api/v1')
 
 @app.route('/')
 def hello_world():
