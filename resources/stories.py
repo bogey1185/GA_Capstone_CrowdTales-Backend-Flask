@@ -48,6 +48,18 @@ class StoryList(Resource):
       help='No text provided.', 
       location=['form', 'json']
     )
+    self.reqparse.add_argument(
+      'status',
+      required=False,
+      help='No status provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'currentContrib',
+      required=False,
+      help='No contributor provided.', 
+      location=['form', 'json']
+    )
     super().__init__
 
   #get all stories
@@ -63,6 +75,73 @@ class StoryList(Resource):
     new_story = models.Story.create(**args)
     return new_story
 
+  #edit story
+  @marshal_with(story_fields)
+  def put(self, id):
+    args = self.reqparse.parse_args()
+    print(args, ' this is args in edit')
+    editted_story = models.Story.update(**args).where(models.Story.id == id)
+    editted_story.execute()
+    return editted_story
+
+class Story(Resource):
+  def __init__(self):
+    #initialize parser
+    self.reqparse = reqparse.RequestParser()
+    #add form of args to control requests
+    self.reqparse.add_argument(
+      'creator',
+      required=True,
+      help='No creator provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'genre',
+      required=True,
+      help='No genre provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'title',
+      required=True,
+      help='No title provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'text',
+      required=True,
+      help='No text provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'status',
+      required=False,
+      help='No status provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'currentContrib',
+      required=False,
+      help='No contributor provided.', 
+      location=['form', 'json']
+    )
+    super().__init__
+
+  #get specific stories
+  @marshal_with(story_fields)
+  def get(self, id):
+    story = models.Story.get(models.Story.id == id)
+    return story
+
+  #edit story
+  # @marshal_with(story_fields)
+  # def put(self, id):
+  #   args = self.reqparse.parse_args()
+  #   print(args, ' this is args in edit')
+  #   editted_story = models.Story.update(**args).where(models.Story.id == id)
+  #   editted_story.execute()
+  #   return editted_story
+
 
 stories_api = Blueprint('resources.stories', __name__)
 api = Api(stories_api)
@@ -71,6 +150,12 @@ api.add_resource(
   StoryList,
   '/stories',
   endpoint='stories'
+)
+
+api.add_resource(
+  Story,
+  '/stories/<int:id>',
+  endpoint='story'
 )
 
 
