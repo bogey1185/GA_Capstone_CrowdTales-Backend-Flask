@@ -39,7 +39,7 @@ class Story(Model):
   title           = CharField() 
   text            = TextField() #writing prompt
   status          = CharField(default='in prompt') #starts as inprompt. When first person adds content, it is chagned to 'inProgress'. Changes to vote complete when project just needs ending. chagnes to vote finish when ending is done. When complete, 'complete'
-  currentContrib  = CharField() #current person with duty to contribute
+  currentContrib  = CharField(default='') #current person with duty to contribute
  
   class Meta:
     database = DATABASE
