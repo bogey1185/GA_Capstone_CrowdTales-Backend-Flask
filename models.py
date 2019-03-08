@@ -38,7 +38,7 @@ class Story(Model):
   genre           = CharField()
   title           = CharField() 
   text            = TextField() #writing prompt
-  status          = CharField() #starts as inprompt. When first person adds content, it is chagned to 'inProgress'. Changes to vote complete when project just needs ending. chagnes to vote finish when ending is done. When complete, 'complete'
+  status          = CharField(default='in prompt') #starts as inprompt. When first person adds content, it is chagned to 'inProgress'. Changes to vote complete when project just needs ending. chagnes to vote finish when ending is done. When complete, 'complete'
   currentContrib  = CharField() #current person with duty to contribute
  
   class Meta:
@@ -54,28 +54,28 @@ class Content(Model):
     database = DATABASE
 
 class Membership(Model): # this model tracks stories where user has contributed
-  username  = ForeignKeyField(User, backref='user')
+  user      = ForeignKeyField(User, backref='user')
   story     = ForeignKeyField(Story, backref='story')
 
   class Meta:
     database = DATABASE
 
 class StoryQueue(Model): # this model tracks stories where user is queued to contribute
-  username  = ForeignKeyField(User, backref='user')
+  user      = ForeignKeyField(User, backref='user')
   story     = ForeignKeyField(Story, backref='story')
 
   class Meta:
     database = DATABASE
 
 class Bookmark(Model): #this model used to track stories that user wants to follow, but not contribute
-  username  = ForeignKeyField(User, backref='user')
+  user      = ForeignKeyField(User, backref='user')
   story     = ForeignKeyField(Story, backref='story')
 
   class Meta:
     database = DATABASE
 
 class Vote(Model):
-  username  = ForeignKeyField(User, backref='user')
+  user      = ForeignKeyField(User, backref='user')
   vote      = CharField()
   content   = ForeignKeyField(Content, backref='content')
 
@@ -83,7 +83,7 @@ class Vote(Model):
     database = DATABASE
 
 class Comment(Model): 
-  username  = ForeignKeyField(User, backref='user')
+  user      = ForeignKeyField(User, backref='user')
   date      = DateTimeField(default=datetime.datetime.now)
   text      = TextField()
   content   = ForeignKeyField(Content, backref='content') #this key field will be used if the comment is assigned to a content submission
