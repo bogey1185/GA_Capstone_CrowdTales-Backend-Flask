@@ -4,6 +4,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from flask_bcrypt import check_password_hash
 import json
 import models
+from flask_cors import CORS
 
 #define user response fields
 
@@ -35,7 +36,7 @@ class UserList(Resource):
       help='No password provided.'
     )
     self.reqparse.add_argument(
-      'verify_password',
+      'password2',
       required=True,
       help='No password verification provided.'
     )
@@ -50,7 +51,7 @@ class UserList(Resource):
   def post(self):
     args = self.reqparse.parse_args()
     print(args, ' this is args in create')
-    if args['password'] == args['verify_password']:
+    if args['password'] == args['password2']:
       ##create our user
       user = models.User.create_user(username = args['username'], email = args['email'], password = args['password'])
       login_user(user)
@@ -107,11 +108,6 @@ class UserLogin(Resource):
           }), 400
         )
 
-
-
-
-
-
 users_api = Blueprint('resources.users', __name__)
 api = Api(users_api)
 
@@ -126,20 +122,5 @@ api.add_resource(
   '/login',
   endpoint='login'
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
