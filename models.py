@@ -76,7 +76,7 @@ class Bookmark(Model): #this model used to track stories that user wants to foll
 
 class Vote(Model):
   user      = ForeignKeyField(User, backref='user')
-  vote      = CharField()
+  vote      = IntegerField()
   content   = ForeignKeyField(Content, backref='content')
 
   class Meta:

@@ -62,6 +62,41 @@ class UserList(Resource):
       }), 400
     )
 
+class User(Resource):
+  def __init__(self):
+    #initialize parser
+    self.reqparse = reqparse.RequestParser()
+    #add form of args to control requests
+    self.reqparse.add_argument(
+      'username',
+      required=True,
+      help='No username provided.', 
+      location=['form', 'json']
+    )
+    super().__init__
+
+  #get specific user
+  @marshal_with(user_fields)
+  def get(self, id):
+    user = models.User.get(models.User.id == id)
+    return user
+
+  # edit story
+  @marshal_with(user_fields)
+  def put(self, id):
+    args = self.reqparse.parse_args()
+    edit = models.User.update(**args).where(models.User.id == id)
+    edit.execute()
+    #.update only returns the num of rows changed. so, if you want it
+    # to return the updated db entry, requery:
+    changed_user = models.User.get(models.User.id == id) #returns updated object
+    return changed_user
+
+  def delete(self, id):
+    query = models.User.delete().where(models.User.id == id)
+    query.execute()
+    return 'resource deleted'
+
 class UserLogin(Resource):
   def __init__(self):
     #initialize parser
@@ -115,6 +150,12 @@ api.add_resource(
   UserList,
   '/users',
   endpoint='users'
+)
+
+api.add_resource(
+  User,
+  '/users/<int:id>',
+  endpoint='user'
 )
 
 api.add_resource(
