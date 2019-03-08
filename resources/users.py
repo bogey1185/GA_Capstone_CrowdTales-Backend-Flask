@@ -14,7 +14,9 @@ user_fields = {
 
 class UserList(Resource):
   def __init__(self):
+    #initialize parser
     self.reqparse = reqparse.RequestParser()
+    #add form of args to control requests
     self.reqparse.add_argument(
       'username',
       required=True,
@@ -59,6 +61,56 @@ class UserList(Resource):
       }), 400
     )
 
+class UserLogin(Resource):
+  def __init__(self):
+    #initialize parser
+    self.reqparse = reqparse.RequestParser()
+    #add form of args to control requests
+    self.reqparse.add_argument(
+      'username',
+      required=True,
+      help='No username provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'password',
+      required=True,
+      help='No password provided.'
+    )
+    super().__init__
+
+  #login route
+  def post(self):
+    #parse args into usable info
+    args = self.reqparse.parse_args()
+    print(args, ' this is args in login')
+    try: 
+      #try and find the submitted username in database
+      user = models.User.get(models.User.username == args['username'])
+    #if username is not found:
+    except models.User.DoesNotExist:
+      return make_response(
+        json.dumps({
+          'error': 'Username or password is incorrect. Please try again.'
+        }), 400
+      )
+    else:
+      #if username was found, check password. 
+      if check_password_hash(user.password, args['password'] ):
+        #if password is a match, login user
+        login_user(user)
+        return marshal(user, user_fields), 201
+      else:
+        return make_response(
+          json.dumps({
+            'error': 'Username or password is incorrect. Please try again.'
+          }), 400
+        )
+
+
+
+
+
 
 users_api = Blueprint('resources.users', __name__)
 api = Api(users_api)
@@ -68,6 +120,13 @@ api.add_resource(
   '/users',
   endpoint='users'
 )
+
+api.add_resource(
+  UserLogin,
+  '/login',
+  endpoint='login'
+)
+
 
 
 
