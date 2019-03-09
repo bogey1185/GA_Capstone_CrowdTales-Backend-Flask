@@ -55,21 +55,7 @@ class CommentList(Resource):
   @marshal_with(comment_fields)
   def post(self):
     args = self.reqparse.parse_args()
-    if args['comment_id'] == '':
-      arguments = {
-        'user_id': args['user_id'],
-        'text': args['text'],
-        'content_id': args['content_id'],
-        'comment_id': NaN
-      }
-    else:
-      arguments = {
-        'user_id': args['user_id'],
-        'text': args['text'],
-        'comment_id': args['comment_id']
-      }
-    print(arguments, 'THIS IS ARGUMENTS')
-    new_comment = models.Comment.create(**arguments)
+    new_comment = models.Comment.create(**args)
     return new_comment
 
 class Comment(Resource):

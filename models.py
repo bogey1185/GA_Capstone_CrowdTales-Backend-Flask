@@ -7,14 +7,9 @@ from flask_login import UserMixin
 
 # DATABASE = SqliteDatabase('crowdtalesdatabase.sqlite')
 DATABASE = PostgresqlDatabase(
-    'crowdtales', #name of database
+    'crowdtales_test', 
     user = 'dave',
-    password = 'asdf'
-    #peewee is using the psycopg2 to connect to psotgres database
-    #hook up database by going in psql and doing: 
-    #1) CREATE DATABASE dog;
-    #2) CREATE USER dave WITH PASSWORD 'password';
-    #3) GRANT ALL PRIVILEGES ON DATABASE dog TO dave;
+    password = 'password'
 )
 
 class User(UserMixin, Model):
@@ -96,8 +91,8 @@ class Comment(Model):
   user_id      = ForeignKeyField(User, backref='user')
   date         = DateTimeField(default=datetime.datetime.now)
   text         = TextField()
-  content_id   = ForeignKeyField(Content, null=True, default='', backref='content') #this key field will be used if the comment is assigned to a content submission
-  comment_id   = ForeignKeyField('self', default='', null=True) # this key field will be used if a comment is assigned to a comment
+  content_id   = ForeignKeyField(Content, null=True, backref='content', on_delete='cascade') #this key field will be used if the comment is assigned to a content submission
+  comment_id   = ForeignKeyField('self', null=True, on_delete='cascade') # this key field will be used if a comment is assigned to a comment
   
   class Meta:
     database = DATABASE
