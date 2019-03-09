@@ -182,7 +182,7 @@ api.add_resource(
 
 api.add_resource(
   StoryNew,
-  '/new-story',
+  '/stories/new',
   endpoint='new-story'
 )
 

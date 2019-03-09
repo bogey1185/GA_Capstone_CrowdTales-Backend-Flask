@@ -91,13 +91,13 @@ api = Api(memberships_api)
 
 api.add_resource(
   MembershipList,
-  '/members',
+  '/memberships',
   endpoint='memberships'
 )
 
 api.add_resource(
   Membership,
-  '/members/<int:id>',
+  '/memberships/<int:id>',
   endpoint='membership'
 )
 
