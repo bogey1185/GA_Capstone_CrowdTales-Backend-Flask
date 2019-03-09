@@ -5,7 +5,8 @@ from resources.stories import stories_api
 from resources.memberships import memberships_api   
 from resources.storyqueues import storyqueues_api    
 from resources.bookmarks import bookmarks_api      
-from resources.contents import content_api                                                                                       
+from resources.contents import content_api   
+from resources.comments import comment_api                                                                                      
 import config
 import models
 from flask_cors import CORS
@@ -34,17 +35,18 @@ CORS(memberships_api, origins=["http://localhost:3000"], supports_credentials=Tr
 CORS(storyqueues_api, origins=["http://localhost:3000"], supports_credentials=True)
 CORS(bookmarks_api, origins=["http://localhost:3000"], supports_credentials=True)
 CORS(content_api, origins=["http://localhost:3000"], supports_credentials=True)
+CORS(comment_api, origins=["http://localhost:3000"], supports_credentials=True)
 app.register_blueprint(users_api, url_prefix='/api/v1')
 app.register_blueprint(stories_api, url_prefix='/api/v1')
 app.register_blueprint(memberships_api, url_prefix='/api/v1')
 app.register_blueprint(storyqueues_api, url_prefix='/api/v1')
 app.register_blueprint(bookmarks_api, url_prefix='/api/v1')
 app.register_blueprint(content_api, url_prefix='/api/v1')
+app.register_blueprint(comment_api, url_prefix='/api/v1')
 
 @app.route('/')
 def hello_world():
   return 'hello world'
-
 
 if __name__ == '__main__':
   models.initialize()

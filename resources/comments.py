@@ -8,18 +8,16 @@ from flask_cors import CORS
 
 #define user response fields
 
-story_fields = {
+comment_fields = {
   'id': fields.String,
   'user_id': fields.String,
   'date': fields.DateTime,
-  'genre': fields.String,
-  'title': fields.String,
   'text': fields.String,
-  'status': fields.String,
-  'currentContrib': fields.String
+  'content_id': fields.String,
+  'comment_id': fields.String
 }
 
-class StoryList(Resource):
+class CommentList(Resource):
   def __init__(self):
     #initialize parser
     self.reqparse = reqparse.RequestParser()
@@ -31,38 +29,50 @@ class StoryList(Resource):
       location=['form', 'json']
     )
     self.reqparse.add_argument(
-      'genre',
-      required=True,
-      help='No genre provided.', 
-      location=['form', 'json']
-    )
-    self.reqparse.add_argument(
-      'title',
-      required=True,
-      help='No title provided.', 
-      location=['form', 'json']
-    )
-    self.reqparse.add_argument(
       'text',
       required=True,
       help='No text provided.', 
       location=['form', 'json']
     )
+    self.reqparse.add_argument(
+      'content_id',
+      help='No text provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'comment_id',
+      help='No text provided.', 
+      location=['form', 'json']
+    )
     super().__init__
 
-  #get all stories
+  #get all content
   def get(self):
-    stories = [marshal(story, story_fields) for story in models.Story.select()]
-    return {'stories': stories}
+    comments = [marshal(comment, comment_fields) for comment in models.Comment.select()]
+    return {'comments': comments}
 
-  #create new story
-  @marshal_with(story_fields)
+ #create new content comment 
+  @marshal_with(comment_fields)
   def post(self):
     args = self.reqparse.parse_args()
-    new_story = models.Story.create(**args)
-    return new_story  
+    if args['comment_id'] == '':
+      arguments = {
+        'user_id': args['user_id'],
+        'text': args['text'],
+        'content_id': args['content_id'],
+        'comment_id': NaN
+      }
+    else:
+      arguments = {
+        'user_id': args['user_id'],
+        'text': args['text'],
+        'comment_id': args['comment_id']
+      }
+    print(arguments, 'THIS IS ARGUMENTS')
+    new_comment = models.Comment.create(**arguments)
+    return new_comment
 
-class Story(Resource):
+class Comment(Resource):
   def __init__(self):
     #initialize parser
     self.reqparse = reqparse.RequestParser()
@@ -70,19 +80,7 @@ class Story(Resource):
     self.reqparse.add_argument(
       'user_id',
       required=True,
-      help='No user_id provided.', 
-      location=['form', 'json']
-    )
-    self.reqparse.add_argument(
-      'genre',
-      required=True,
-      help='No genre provided.', 
-      location=['form', 'json']
-    )
-    self.reqparse.add_argument(
-      'title',
-      required=True,
-      help='No title provided.', 
+      help='No user id provided.', 
       location=['form', 'json']
     )
     self.reqparse.add_argument(
@@ -92,63 +90,53 @@ class Story(Resource):
       location=['form', 'json']
     )
     self.reqparse.add_argument(
-      'status',
-      required=False,
-      help='No status provided.', 
+      'content_id',
+      help='No text provided.', 
       location=['form', 'json']
     )
     self.reqparse.add_argument(
-      'currentContrib',
-      required=False,
-      help='No contributor provided.', 
+      'comment_id',
+      help='No text provided.', 
       location=['form', 'json']
     )
     super().__init__
 
-
   #get specific stories
-  @marshal_with(story_fields)
+  @marshal_with(comment_fields)
   def get(self, id):
-    story = models.Story.get(models.Story.id == id)
-    return story
+    comment = models.Comment.get(models.Comment.id == id)
+    return comment
 
   # edit story
-  @marshal_with(story_fields)
+  @marshal_with(comment_fields)
   def put(self, id):
     args = self.reqparse.parse_args()
-    edit = models.Story.update(**args).where(models.Story.id == id)
+    edit = models.Comment.update(**args).where(models.Comment.id == id)
     edit.execute()
     #.update only returns the num of rows changed. so, if you want it
     # to return the updated db entry, requery:
-    changed_story = models.Story.get(models.Story.id == id) #returns updated object
-    return changed_story
+    changed_comment = models.Comment.get(models.Comment.id == id) #returns updated object
+    return changed_comment
 
   def delete(self, id):
-    target = models.Story.get(models.Story.id == id)
+    target = models.Comment.get(models.Comment.id == id)
     query = target.delete_instance(recursive=True)
     return 'resource deleted'
 
-stories_api = Blueprint('resources.stories', __name__)
-api = Api(stories_api)
+comment_api = Blueprint('resources.comments', __name__)
+api = Api(comment_api)
 
 api.add_resource(
-  StoryList,
-  '/stories',
-  endpoint='stories'
+  CommentList,
+  '/comments',
+  endpoint='comments'
 )
 
 api.add_resource(
-  Story,
-  '/stories/<int:id>',
-  endpoint='story'
+  Comment,
+  '/comments/<int:id>',
+  endpoint='comment'
 )
-
-
-
-
-
-
-
 
 
 
