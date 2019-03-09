@@ -53,109 +53,52 @@ class ContentList(Resource):
     new_content = models.Content.create(**args)
     return new_content
 
-# class StoryNew(Resource):
-#   def __init__(self):
-#     #initialize parser
-#     self.reqparse = reqparse.RequestParser()
-#     #add form of args to control requests
-#     self.reqparse.add_argument(
-#       'creator',
-#       required=True,
-#       help='No creator provided.', 
-#       location=['form', 'json']
-#     )
-#     self.reqparse.add_argument(
-#       'genre',
-#       required=True,
-#       help='No genre provided.', 
-#       location=['form', 'json']
-#     )
-#     self.reqparse.add_argument(
-#       'title',
-#       required=True,
-#       help='No title provided.', 
-#       location=['form', 'json']
-#     )
-#     self.reqparse.add_argument(
-#       'text',
-#       required=True,
-#       help='No text provided.', 
-#       location=['form', 'json']
-#     )
-#     super().__init__
+class Content(Resource):
+  def __init__(self):
+    #initialize parser
+    self.reqparse = reqparse.RequestParser()
+    #add form of args to control requests
+    self.reqparse.add_argument(
+      'user_id',
+      required=True,
+      help='No user id provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'text',
+      required=True,
+      help='No text provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'story_id',
+      required=True,
+      help='No text provided.', 
+      location=['form', 'json']
+    )
+    super().__init__
 
-#   #create new story
-#   @marshal_with(story_fields)
-#   def post(self):
-#     args = self.reqparse.parse_args()
-#     new_story = models.Story.create(**args)
-#     return new_story
+  #get specific stories
+  @marshal_with(content_fields)
+  def get(self, id):
+    content = models.Content.get(models.Content.id == id)
+    return content
 
-# class Story(Resource):
-#   def __init__(self):
-#     #initialize parser
-#     self.reqparse = reqparse.RequestParser()
-#     #add form of args to control requests
-#     self.reqparse.add_argument(
-#       'creator',
-#       required=True,
-#       help='No creator provided.', 
-#       location=['form', 'json']
-#     )
-#     self.reqparse.add_argument(
-#       'genre',
-#       required=True,
-#       help='No genre provided.', 
-#       location=['form', 'json']
-#     )
-#     self.reqparse.add_argument(
-#       'title',
-#       required=True,
-#       help='No title provided.', 
-#       location=['form', 'json']
-#     )
-#     self.reqparse.add_argument(
-#       'text',
-#       required=True,
-#       help='No text provided.', 
-#       location=['form', 'json']
-#     )
-#     self.reqparse.add_argument(
-#       'status',
-#       required=False,
-#       help='No status provided.', 
-#       location=['form', 'json']
-#     )
-#     self.reqparse.add_argument(
-#       'currentContrib',
-#       required=False,
-#       help='No contributor provided.', 
-#       location=['form', 'json']
-#     )
-#     super().__init__
+  # edit story
+  @marshal_with(content_fields)
+  def put(self, id):
+    args = self.reqparse.parse_args()
+    edit = models.Content.update(**args).where(models.Content.id == id)
+    edit.execute()
+    #.update only returns the num of rows changed. so, if you want it
+    # to return the updated db entry, requery:
+    changed_content = models.Content.get(models.Content.id == id) #returns updated object
+    return changed_content
 
-
-#   #get specific stories
-#   @marshal_with(story_fields)
-#   def get(self, id):
-#     story = models.Story.get(models.Story.id == id)
-#     return story
-
-#   # edit story
-#   @marshal_with(story_fields)
-#   def put(self, id):
-#     args = self.reqparse.parse_args()
-#     edit = models.Story.update(**args).where(models.Story.id == id)
-#     edit.execute()
-#     #.update only returns the num of rows changed. so, if you want it
-#     # to return the updated db entry, requery:
-#     changed_story = models.Story.get(models.Story.id == id) #returns updated object
-#     return change_story
-
-#   def delete(self, id):
-#     query = models.Story.delete().where(models.Story.id == id)
-#     query.execute()
-#     return 'resource deleted'
+  def delete(self, id):
+    target = models.Content.get(models.Content.id == id)
+    query = target.delete_instance(recursive=True)
+    return 'resource deleted'
 
 content_api = Blueprint('resources.contents', __name__)
 api = Api(content_api)
@@ -166,17 +109,11 @@ api.add_resource(
   endpoint='contents'
 )
 
-# api.add_resource(
-#   StoryNew,
-#   '/stories-new',
-#   endpoint='stories-new'
-# )
-
-# api.add_resource(
-#   Story,
-#   '/stories/<int:id>',
-#   endpoint='story'
-# )
+api.add_resource(
+  Content,
+  '/content/<int:id>',
+  endpoint='content'
+)
 
 
 
