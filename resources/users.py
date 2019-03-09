@@ -6,6 +6,13 @@ import json
 import models
 from flask_cors import CORS
 
+# Print all queries to stderr.
+# import logging
+# logger = logging.getLogger('peewee')
+# logger.setLevel(logging.DEBUG)
+# logger.addHandler(logging.StreamHandler())
+
+
 #define user response fields
 
 user_fields = {
@@ -94,8 +101,8 @@ class User(Resource):
     return changed_user
 
   def delete(self, id):
-    query = models.User.delete().where(models.User.id == id)
-    query.execute()
+    target = models.User.get(models.User.id == id)
+    query = target.delete_instance(recursive=True)
     return 'resource deleted'
 
 class UserLogin(Resource):

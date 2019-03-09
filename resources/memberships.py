@@ -82,8 +82,8 @@ class Membership(Resource):
     return changed_membership
 
   def delete(self, id):
-    query = models.Membership.delete().where(models.Membership.id == id)
-    query.execute()
+    target = models.Membership.get(models.Membership.id == id)
+    query = target.delete_instance(recursive=True)
     return 'resource deleted'
 
 memberships_api = Blueprint('resources.memberships', __name__)

@@ -33,7 +33,7 @@ class User(UserMixin, Model):
       raise Exception('Email address already in use.')
 
 class Story(Model):
-  creator         = ForeignKeyField(User, backref='user')
+  user_id         = ForeignKeyField(User, backref='user')
   date            = DateTimeField(default=datetime.datetime.now) 
   genre           = CharField()
   title           = CharField() 
@@ -45,49 +45,49 @@ class Story(Model):
     database = DATABASE
 
 class Content(Model):
-  username  = ForeignKeyField(User, backref='user') 
+  user_id   = ForeignKeyField(User, backref='user') 
   date      = DateTimeField(default=datetime.datetime.now)
   text      = TextField()
-  votedate  = DateTimeField() 
+  story_id  = ForeignKeyField(Story, backref='story')
 
   class Meta:
     database = DATABASE
 
 class Membership(Model): # this model tracks stories where user has contributed
-  user      = ForeignKeyField(User, backref='user')
-  story     = ForeignKeyField(Story, backref='story')
+  user_id      = ForeignKeyField(User, backref='user')
+  story_id     = ForeignKeyField(Story, backref='story')
 
   class Meta:
     database = DATABASE
 
 class StoryQueue(Model): # this model tracks stories where user is queued to contribute
-  user      = ForeignKeyField(User, backref='user')
-  story     = ForeignKeyField(Story, backref='story')
+  user_id      = ForeignKeyField(User, backref='user')
+  story_id     = ForeignKeyField(Story, backref='story')
 
   class Meta:
     database = DATABASE
 
 class Bookmark(Model): #this model used to track stories that user wants to follow, but not contribute
-  user      = ForeignKeyField(User, backref='user')
-  story     = ForeignKeyField(Story, backref='story')
+  user_id      = ForeignKeyField(User, backref='user')
+  story_id     = ForeignKeyField(Story, backref='story')
 
   class Meta:
     database = DATABASE
 
 class Vote(Model):
-  user      = ForeignKeyField(User, backref='user')
-  vote      = IntegerField()
-  content   = ForeignKeyField(Content, backref='content')
+  user_id      = ForeignKeyField(User, backref='user')
+  vote         = IntegerField()
+  content_id   = ForeignKeyField(Content, backref='content')
 
   class Meta:
     database = DATABASE
 
 class Comment(Model): 
-  user      = ForeignKeyField(User, backref='user')
-  date      = DateTimeField(default=datetime.datetime.now)
-  text      = TextField()
-  content   = ForeignKeyField(Content, backref='content') #this key field will be used if the comment is assigned to a content submission
-  comments  = ForeignKeyField('self') # this key field will be used if a comment is assigned to a comment
+  user_id      = ForeignKeyField(User, backref='user')
+  date         = DateTimeField(default=datetime.datetime.now)
+  text         = TextField()
+  content_id   = ForeignKeyField(Content, backref='content') #this key field will be used if the comment is assigned to a content submission
+  comments_id  = ForeignKeyField('self') # this key field will be used if a comment is assigned to a comment
 
   class Meta:
     database = DATABASE

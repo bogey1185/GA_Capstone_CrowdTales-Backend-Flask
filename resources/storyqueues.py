@@ -81,6 +81,9 @@ class StoryQueue(Resource):
     changed_storyqueue = models.StoryQueue.get(models.StoryQueue.id == id) #returns updated object
     return changed_storyqueue
 
+  #no recursive delete here because we just want to remove 
+  #the person who contributed from the queue. Don't want to 
+  #delete anything they did.
   def delete(self, id):
     query = models.StoryQueue.delete().where(models.StoryQueue.id == id)
     query.execute()

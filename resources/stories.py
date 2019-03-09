@@ -10,7 +10,7 @@ from flask_cors import CORS
 
 story_fields = {
   'id': fields.String,
-  'creator': fields.String,
+  'user_id': fields.String,
   'date': fields.DateTime,
   'genre': fields.String,
   'title': fields.String,
@@ -25,9 +25,9 @@ class StoryList(Resource):
     self.reqparse = reqparse.RequestParser()
     #add form of args to control requests
     self.reqparse.add_argument(
-      'creator',
+      'user_id',
       required=True,
-      help='No creator provided.', 
+      help='No user id provided.', 
       location=['form', 'json']
     )
     self.reqparse.add_argument(
@@ -80,9 +80,9 @@ class StoryNew(Resource):
     self.reqparse = reqparse.RequestParser()
     #add form of args to control requests
     self.reqparse.add_argument(
-      'creator',
+      'user_id',
       required=True,
-      help='No creator provided.', 
+      help='No user id provided.', 
       location=['form', 'json']
     )
     self.reqparse.add_argument(
@@ -118,9 +118,9 @@ class Story(Resource):
     self.reqparse = reqparse.RequestParser()
     #add form of args to control requests
     self.reqparse.add_argument(
-      'creator',
+      'user_id',
       required=True,
-      help='No creator provided.', 
+      help='No user_id provided.', 
       location=['form', 'json']
     )
     self.reqparse.add_argument(
@@ -174,8 +174,8 @@ class Story(Resource):
     return change_story
 
   def delete(self, id):
-    query = models.Story.delete().where(models.Story.id == id)
-    query.execute()
+    target = models.Story.get(models.Story.id == id)
+    query = target.delete_instance(recursive=True)
     return 'resource deleted'
 
 stories_api = Blueprint('resources.stories', __name__)

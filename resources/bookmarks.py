@@ -81,6 +81,7 @@ class Bookmark(Resource):
     changed_bookmark = models.Bookmark.get(models.Bookmark.id == id) #returns updated object
     return changed_bookmark
 
+  #no recursive delete - just want to delete bookmark and nothing else
   def delete(self, id):
     query = models.Bookmark.delete().where(models.Bookmark.id == id)
     query.execute()
