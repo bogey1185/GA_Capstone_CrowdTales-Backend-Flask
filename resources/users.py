@@ -81,6 +81,12 @@ class User(Resource):
       help='No username provided.', 
       location=['form', 'json']
     )
+    self.reqparse.add_argument(
+      'email',
+      required=True,
+      help='No email provided.', 
+      location=['form', 'json']
+    )
     super().__init__
 
   #get specific user

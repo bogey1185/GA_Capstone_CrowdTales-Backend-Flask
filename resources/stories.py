@@ -67,13 +67,6 @@ class StoryList(Resource):
     stories = [marshal(story, story_fields) for story in models.Story.select()]
     return {'stories': stories}
 
-  #create new story
-  @marshal_with(story_fields)
-  def post(self):
-    args = self.reqparse.parse_args()
-    new_story = models.Story.create(**args)
-    return new_story
-
 class StoryNew(Resource):
   def __init__(self):
     #initialize parser
@@ -171,7 +164,7 @@ class Story(Resource):
     #.update only returns the num of rows changed. so, if you want it
     # to return the updated db entry, requery:
     changed_story = models.Story.get(models.Story.id == id) #returns updated object
-    return change_story
+    return changed_story
 
   def delete(self, id):
     target = models.Story.get(models.Story.id == id)
@@ -189,8 +182,8 @@ api.add_resource(
 
 api.add_resource(
   StoryNew,
-  '/stories-new',
-  endpoint='stories-new'
+  '/new-story',
+  endpoint='new-story'
 )
 
 api.add_resource(
