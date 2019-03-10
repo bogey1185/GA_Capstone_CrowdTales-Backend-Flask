@@ -5,12 +5,22 @@ from playhouse.db_url import connect
 from flask_bcrypt import generate_password_hash
 from flask_login import UserMixin
 
-# DATABASE = SqliteDatabase('crowdtalesdatabase.sqlite')
-DATABASE = PostgresqlDatabase(
+#this is dev sqlite db
+# DATABASE = SqliteDatabase('crowdtalesdatabase.sqlite') 
+
+#this is dev postgres db
+DATABASE = PostgresqlDatabase(  
     'crowdtales_test', 
     user = 'dave',
     password = 'password'
 )
+
+#this is production db
+# DATABASE = PostgresqlDatabase(  
+#     'crowdtales', 
+#     user = 'dave',
+#     password = 'password'
+# )
 
 class User(UserMixin, Model):
   username      = CharField(unique=True)
