@@ -10,7 +10,7 @@ from flask_login import UserMixin
 
 #this is dev postgres db
 DATABASE = PostgresqlDatabase(  
-    'crowdtales_test', 
+    'crowdtales_devdb', 
     user = 'dave',
     password = 'password'
 )
