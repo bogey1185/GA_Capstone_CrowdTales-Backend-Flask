@@ -91,8 +91,8 @@ class Comment(Model):
   user_id      = ForeignKeyField(User, backref='user')
   date         = DateTimeField(default=datetime.datetime.now)
   text         = TextField()
-  content_id   = ForeignKeyField(Content, null=True, backref='content', on_delete='cascade') #this key field will be used if the comment is assigned to a content submission
-  comment_id   = ForeignKeyField('self', null=True, on_delete='cascade') # this key field will be used if a comment is assigned to a comment
+  content_id   = ForeignKeyField(Content, null=True, backref='content', on_delete='CASCADE') #this key field will be used if the comment is assigned to a content submission
+  comment_id   = ForeignKeyField('self', null=True, on_delete='CASCADE') # this key field will be used if a comment is assigned to a comment
   
   class Meta:
     database = DATABASE
