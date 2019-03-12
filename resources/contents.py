@@ -2,6 +2,7 @@ from flask import jsonify, Blueprint, abort, make_response
 from flask_restful import Resource, Api, reqparse, fields, marshal, marshal_with, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_bcrypt import check_password_hash
+from playhouse.shortcuts import model_to_dict, dict_to_model
 import json
 import models
 from flask_cors import CORS
@@ -11,8 +12,10 @@ from flask_cors import CORS
 content_fields = {
   'id': fields.String,
   'user_id': fields.String,
+  'username': fields.String,
   'date': fields.DateTime,
   'text': fields.String,
+  'title': fields.String,
   'story_id': fields.String
 }
 
@@ -31,6 +34,18 @@ class ContentList(Resource):
       'text',
       required=True,
       help='No text provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'title',
+      required=True,
+      help='No title provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'username',
+      required=True,
+      help='No username provided.', 
       location=['form', 'json']
     )
     self.reqparse.add_argument(
@@ -68,6 +83,18 @@ class Content(Resource):
       'text',
       required=True,
       help='No text provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'title',
+      required=True,
+      help='No title provided.', 
+      location=['form', 'json']
+    )
+    self.reqparse.add_argument(
+      'username',
+      required=True,
+      help='No username provided.', 
       location=['form', 'json']
     )
     self.reqparse.add_argument(

@@ -2,6 +2,7 @@ from flask import jsonify, Blueprint, abort, make_response
 from flask_restful import Resource, Api, reqparse, fields, marshal, marshal_with, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_bcrypt import check_password_hash
+from playhouse.shortcuts import model_to_dict, dict_to_model
 import json
 import models
 from flask_cors import CORS
@@ -16,7 +17,8 @@ story_fields = {
   'title': fields.String,
   'text': fields.String,
   'status': fields.String,
-  'currentContrib': fields.String
+  'currentContrib': fields.String,
+  'username': fields.String
 }
 
 class StoryList(Resource):
@@ -52,8 +54,12 @@ class StoryList(Resource):
 
   #get all stories
   def get(self):
-    stories = [marshal(story, story_fields) for story in models.Story.select()]
-    return {'stories': stories}
+    stories = [story for story in models.Story.select()]
+    for story in stories:
+      story.username = model_to_dict(story.user_id)['username']
+
+    jsonstories = [marshal(story, story_fields) for story in stories]
+    return {'stories': jsonstories}
 
   #create new story
   @marshal_with(story_fields)

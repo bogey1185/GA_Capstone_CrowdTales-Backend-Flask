@@ -2,6 +2,7 @@ from flask import jsonify, Blueprint, abort, make_response
 from flask_restful import Resource, Api, reqparse, fields, marshal, marshal_with, url_for
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_bcrypt import check_password_hash
+from playhouse.shortcuts import model_to_dict, dict_to_model
 import json
 import models
 from flask_cors import CORS
@@ -157,6 +158,14 @@ class UserLogin(Resource):
           }), 400
         )
 
+class UserLogout(Resource):
+  def __init__(self):
+    super().__init__
+
+  def get(self):
+    logout_user()
+    return 'logged out', 200
+
 users_api = Blueprint('resources.users', __name__)
 api = Api(users_api)
 
@@ -176,6 +185,12 @@ api.add_resource(
   UserLogin,
   '/login',
   endpoint='login'
+)
+
+api.add_resource(
+  UserLogout,
+  '/logout',
+  endpoint='logout'
 )
 
 
