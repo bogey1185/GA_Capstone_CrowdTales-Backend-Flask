@@ -8,10 +8,11 @@ from resources.bookmarks import bookmarks_api
 from resources.contents import content_api   
 from resources.comments import comment_api      
 from resources.votes import votes_api                                                                         
-# import config
 import models
 from flask_cors import CORS
 from flask_login import LoginManager, current_user
+if not 'ON_HEROKU' in os.environ:
+  import config 
 
 app = Flask(__name__)
 
@@ -52,11 +53,10 @@ def hello_world():
   return 'hello world'
 
 if 'ON_HEROKU' in os.environ:
-    print('hitting ')
     models.initialize()
-
-# if __name__ == '__main__':
-#   models.initialize()
-  # app.run(debug=config.DEBUG, port=config.PORT)
+else:
+  if __name__ == '__main__':
+    models.initialize()
+    app.run(debug=config.DEBUG, port=config.PORT)
 
 
