@@ -7,8 +7,7 @@ from resources.storyqueues import storyqueues_api
 from resources.bookmarks import bookmarks_api      
 from resources.contents import content_api   
 from resources.comments import comment_api      
-from resources.votes import votes_api  
-from playhouse.db_url import connect                                                                              
+from resources.votes import votes_api                                                                         
 # import config
 import models
 from flask_cors import CORS
