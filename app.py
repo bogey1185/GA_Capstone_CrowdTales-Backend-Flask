@@ -30,14 +30,14 @@ def load_user(userid):
   except models.DoesNotExist:
     return None
 
-CORS(users_api, origins=["http://localhost:3000"], supports_credentials=True)
-CORS(stories_api, origins=["http://localhost:3000"], supports_credentials=True)
-CORS(memberships_api, origins=["http://localhost:3000"], supports_credentials=True)
-CORS(storyqueues_api, origins=["http://localhost:3000"], supports_credentials=True)
-CORS(bookmarks_api, origins=["http://localhost:3000"], supports_credentials=True)
-CORS(content_api, origins=["http://localhost:3000"], supports_credentials=True)
-CORS(comment_api, origins=["http://localhost:3000"], supports_credentials=True)
-CORS(votes_api, origins=["http://localhost:3000"], supports_credentials=True)
+CORS(users_api, origins=["http://localhost:3000", "https://crowdtales.herokuapp.com"], supports_credentials=True)
+CORS(stories_api, origins=["http://localhost:3000", "https://crowdtales.herokuapp.com"], supports_credentials=True)
+CORS(memberships_api, origins=["http://localhost:3000", "https://crowdtales.herokuapp.com"], supports_credentials=True)
+CORS(storyqueues_api, origins=["http://localhost:3000", "https://crowdtales.herokuapp.com"], supports_credentials=True)
+CORS(bookmarks_api, origins=["http://localhost:3000", "https://crowdtales.herokuapp.com"], supports_credentials=True)
+CORS(content_api, origins=["http://localhost:3000", "https://crowdtales.herokuapp.com"], supports_credentials=True)
+CORS(comment_api, origins=["http://localhost:3000", "https://crowdtales.herokuapp.com"], supports_credentials=True)
+CORS(votes_api, origins=["http://localhost:3000", "https://crowdtales.herokuapp.com"], supports_credentials=True)
 app.register_blueprint(users_api, url_prefix='/api/v1')
 app.register_blueprint(stories_api, url_prefix='/api/v1')
 app.register_blueprint(memberships_api, url_prefix='/api/v1')
@@ -51,8 +51,12 @@ app.register_blueprint(votes_api, url_prefix='/api/v1')
 def hello_world():
   return 'hello world'
 
+if 'ON_HEROKU' in os.environ:
+    print('hitting ')
+    models.initialize()
+
 if __name__ == '__main__':
   models.initialize()
-  app.run(debug=config.DEBUG, port=config.PORT)
+  # app.run(debug=config.DEBUG, port=config.PORT)
 
 
