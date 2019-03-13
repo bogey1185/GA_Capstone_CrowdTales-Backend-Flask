@@ -8,15 +8,15 @@ from resources.bookmarks import bookmarks_api
 from resources.contents import content_api   
 from resources.comments import comment_api      
 from resources.votes import votes_api                                                                                
-import config
+# import config
 import models
 from flask_cors import CORS
 from flask_login import LoginManager, current_user
 
 app = Flask(__name__)
 
-#session key for cookies 
-app.secret_key = config.SECRET_KEY
+#session key for cookies!
+app.secret_key = connect(os.environ.get('SECRET_KEY'))
 
 #setup app login
 login_manager = LoginManager()

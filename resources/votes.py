@@ -8,7 +8,7 @@ import models
 from flask_cors import CORS
 
 #define user response fields
-
+ 
 vote_fields = {
   'id': fields.String,
   'user_id': fields.String,
