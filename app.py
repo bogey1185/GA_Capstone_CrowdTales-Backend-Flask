@@ -17,7 +17,7 @@ from flask_login import LoginManager, current_user
 app = Flask(__name__)
 
 #session key for cookies!
-app.secret_key = connect(os.environ.get('SECRET_KEY'))
+app.secret_key = 'LKSDFLKVNKNKSCNDMKLDMV SDLKMVNLKSD VSD'
 
 #setup app login
 login_manager = LoginManager()
