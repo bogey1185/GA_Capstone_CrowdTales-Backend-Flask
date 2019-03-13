@@ -61,7 +61,9 @@ class Story(Model):
 
 class Content(Model):
   user_id   = ForeignKeyField(User, backref='user') 
+  username  = CharField()
   date      = DateTimeField(default=datetime.datetime.now)
+  title     = CharField()
   text      = TextField()
   story_id  = ForeignKeyField(Story, backref='story')
 
@@ -99,6 +101,7 @@ class Vote(Model):
 
 class Comment(Model): 
   user_id      = ForeignKeyField(User, backref='user')
+  username     = CharField()
   date         = DateTimeField(default=datetime.datetime.now)
   text         = TextField()
   content_id   = ForeignKeyField(Content, null=True, backref='content', on_delete='CASCADE') #this key field will be used if the comment is assigned to a content submission
