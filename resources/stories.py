@@ -134,6 +134,24 @@ class Story(Resource):
     query = target.delete_instance(recursive=True)
     return 'resource deleted'
 
+class UserStory(Resource):
+  def __init__(self):
+    #initialize parser
+    self.reqparse = reqparse.RequestParser()
+    #add form of args to control requests
+    self.reqparse.add_argument(
+      'user_id',
+      required=True,
+      help='No user_id provided.', 
+      location=['form', 'json']
+    )
+    super().__init__
+
+  #get stories with specific user_id
+  def get(self, id):
+    stories = [marshal(story, story_fields) for story in models.Story.select().where(models.Story.user_id == id)]
+    return {'stories': stories}
+
 stories_api = Blueprint('resources.stories', __name__)
 api = Api(stories_api)
 
@@ -149,6 +167,11 @@ api.add_resource(
   endpoint='story'
 )
 
+api.add_resource(
+  UserStory,
+  '/userstories/<int:id>',
+  endpoint='userstory'
+)
 
 
 

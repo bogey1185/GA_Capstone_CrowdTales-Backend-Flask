@@ -15,6 +15,17 @@ bookmark_fields = {
   'story_id': fields.String
 }
 
+bookmarkstory_fields = {
+  'id': fields.String,
+  'user_id': fields.String,
+  'story_id': fields.String,
+  'username': fields.String,
+  'date': fields.String,
+  'title': fields.String,
+  'text': fields.String,
+  'status': fields.String
+}
+
 class BookmarkList(Resource):
   def __init__(self):
     #initialize parser
@@ -88,6 +99,32 @@ class Bookmark(Resource):
     query.execute()
     return 'resource deleted'
 
+class BookmarkStory(Resource):
+  def __init__(self):
+    #initialize parser
+    self.reqparse = reqparse.RequestParser()
+    #add form of args to control requests
+    self.reqparse.add_argument(
+      'user_id',
+      required=True,
+      help='No user id provided.', 
+      location=['form', 'json']
+    )
+    super().__init__
+
+  #get specific membership
+  def get(self, id):
+    bookmarks = [bookmark for bookmark in models.Bookmark.select().where(models.Bookmark.user_id == id)]
+    for bookmark in bookmarks:
+      bookmark.username = model_to_dict(bookmark.story_id)['user_id']['username']
+      bookmark.date = model_to_dict(bookmark.story_id)['date']
+      bookmark.title = model_to_dict(bookmark.story_id)['title']
+      bookmark.text = model_to_dict(bookmark.story_id)['text']
+      bookmark.status = model_to_dict(bookmark.story_id)['status']
+
+    jsonbookmarks = [marshal(bookmark, bookmarkstory_fields) for bookmark in bookmarks]
+    return {'bookmarks': jsonbookmarks}
+
 bookmarks_api = Blueprint('resources.bookmarks', __name__)
 api = Api(bookmarks_api)
 
@@ -103,6 +140,11 @@ api.add_resource(
   endpoint='bookmark'
 )
 
+api.add_resource(
+  BookmarkStory,
+  '/bookmarkstory/<int:id>',
+  endpoint='bookmarkstory'
+)
 
 
 

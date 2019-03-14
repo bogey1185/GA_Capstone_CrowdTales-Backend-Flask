@@ -15,6 +15,17 @@ membership_fields = {
   'story_id': fields.String
 }
 
+membershipstory_fields = {
+  'id': fields.String,
+  'user_id': fields.String,
+  'story_id': fields.String,
+  'username': fields.String,
+  'date': fields.String,
+  'title': fields.String,
+  'text': fields.String,
+  'status': fields.String
+}
+
 class MembershipList(Resource):
   def __init__(self):
     #initialize parser
@@ -87,6 +98,32 @@ class Membership(Resource):
     query = target.delete_instance(recursive=True)
     return 'resource deleted'
 
+class MembershipStory(Resource):
+  def __init__(self):
+    #initialize parser
+    self.reqparse = reqparse.RequestParser()
+    #add form of args to control requests
+    self.reqparse.add_argument(
+      'user_id',
+      required=True,
+      help='No user id provided.', 
+      location=['form', 'json']
+    )
+    super().__init__
+
+  #get specific membership
+  def get(self, id):
+    memberships = [membership for membership in models.Membership.select().where(models.Membership.user_id == id)]
+    for membership in memberships:
+      membership.username = model_to_dict(membership.story_id)['user_id']['username']
+      membership.date = model_to_dict(membership.story_id)['date']
+      membership.title = model_to_dict(membership.story_id)['title']
+      membership.text = model_to_dict(membership.story_id)['text']
+      membership.status = model_to_dict(membership.story_id)['status']
+
+    jsonmemberships = [marshal(membership, membershipstory_fields) for membership in memberships]
+    return {'memberships': jsonmemberships}
+
 memberships_api = Blueprint('resources.memberships', __name__)
 api = Api(memberships_api)
 
@@ -100,6 +137,12 @@ api.add_resource(
   Membership,
   '/memberships/<int:id>',
   endpoint='membership'
+)
+
+api.add_resource(
+  MembershipStory,
+  '/membershipstory/<int:id>',
+  endpoint='membershipstory'
 )
 
 
