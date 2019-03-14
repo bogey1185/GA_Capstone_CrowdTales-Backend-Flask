@@ -149,8 +149,12 @@ class UserStory(Resource):
 
   #get stories with specific user_id
   def get(self, id):
-    stories = [marshal(story, story_fields) for story in models.Story.select().where(models.Story.user_id == id)]
-    return {'stories': stories}
+    stories = [story for story in models.Story.select().where(models.Story.user_id == id)]
+    for story in stories:
+      story.username = model_to_dict(story.user_id)['username']
+
+    jsonstories = [marshal(story, story_fields) for story in stories]
+    return {'stories': jsonstories}
 
 stories_api = Blueprint('resources.stories', __name__)
 api = Api(stories_api)
