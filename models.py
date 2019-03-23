@@ -5,14 +5,7 @@ from playhouse.db_url import connect
 from flask_bcrypt import generate_password_hash
 from flask_login import UserMixin
 
-# if 'ON_HEROKU' in os.environ:
 DATABASE = connect(os.environ.get('DATABASE_URL'))
-# else:
-#   DATABASE = PostgresqlDatabase( 
-#       'crowdtales_devdb', 
-#       user = 'dave',
-#       password = 'password'
-#   )
 
 class User(UserMixin, Model):
   username      = CharField(unique=True)
